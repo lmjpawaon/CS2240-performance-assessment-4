@@ -20,23 +20,31 @@
             justify-content: center;
             align-items: center;
         }
+        a{
+            text-decoration: none!important;
+            color:white;
+        }
+        .title{
+            font-weight: 700;
+        }
     </style>
     
     <title>Home</title>
 </head>
 <body>
     <div class="container">
-        <h1 class="title">Administrator Control Center</h1>
+        <h1 class="title">ADMINISTRATOR CONTROL DASHBOARD</h1>
     </div>
     <div class="container" id="directoryBtn">
-            <div class="col-3">
-                <button class="btn btn-primary">Teacher</button>
+        <div class="row">
+            <div class="col-4">
+                <a href="/teachers" class="btn btn-primary">Teacher</a>
             </div>
-            <div class="col-3">
-                <button class="btn btn-primary">Student</button>
+            <div class="col-4">
+                <a href="/students" class="btn btn-primary">Student</a>
             </div>
-            <div class="col-3">
-                <button class="btn btn-primary">Subject</button>
+            <div class="col-4">
+                <a href="/subjects" class="btn btn-primary">Subject</a>
             </div>
         </div>
     </div>
