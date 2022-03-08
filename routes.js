@@ -28,7 +28,7 @@ appRouter.get('/teachers/delete/(:id)',(req, res)=>{
             res.redirect('/teachers');
         }
         else{
-        req.flash('success', 'Teacher ID= '+req.params.id+'Record Updated!');
+        req.flash('success', 'Teacher ID= '+req.params.id+'Record Deleted!');
         res.redirect('/teachers');
         }
     });
@@ -45,7 +45,42 @@ appRouter.get('/teachers/search',(req, res) => {
         }
     });
 });
-appRouter.get('/students', (req, res) => res.render('student'));
+appRouter.get('/students', (req, res) => {
+    mysqlConnection.query('SELECT * FROM students', (err, rows) => {
+        if (err){
+            req.flash('error',err);
+            res.render('student',{data:''});
+        }
+        else{
+        res.render('student',{data:rows});
+        }
+    });
+});
+appRouter.get('/students/delete/(:id)',(req, res)=>{
+    let user = {id:req.params.id};
+    mysqlConnection.query('DELETE FROM students WHERE studentID = '+req.params.id,user,(err, result) => {
+        if(err){
+            req.flash('error',err);
+            res.redirect('/students');
+        }
+        else{
+        req.flash('success', 'Student ID= '+req.params.id+'Record Deleted!');
+        res.redirect('/students');
+        }
+    });
+});
+appRouter.get('/students/search',(req, res) => {
+    let searchQuery = req.query.studentName;
+    mysqlConnection.query('SELECT * FROM students WHERE studentLastName LIKE ? OR studentFirstName LIKE ?', ['%' + searchQuery + '%', '%' + searchQuery + '%'], (err, rows) => {
+        if (err){
+            req.flash('error',err);
+            res.render('student',{data:''});
+        }
+        else{
+        res.render('student',{data:rows});
+        }
+    });
+});
 appRouter.get('/subjects', (req, res) => res.render('subjects'));
 appRouter.get('*', (req, res) => res.render('404'));
 
@@ -76,6 +111,29 @@ appRouter.post('/teachers/add',(req, res)=>{
     });
 });
 
+appRouter.post('/students/add',(req, res)=>{
+    let studentLastName = req.body.studentLastName;
+    let studentFirstName = req.body.studentFirstName;
+    let studentMiddleName = req.body.studentMiddleName;
+
+    var form_data={
+        studentLastName: studentLastName,
+        studentFirstName: studentFirstName,
+        studentMiddleName: studentMiddleName
+    };
+
+    mysqlConnection.query('INSERT INTO students SET ?', form_data, (err, result) => {
+        if(err){
+            req.flash('error',err);
+            res.redirect('/students');
+        }
+        else{
+        req.flash('success', 'Student Added to Record');
+        res.redirect('/students');
+        }
+    });
+});
+
 //UPDATE ROUTES
 appRouter.post('/teachers/edit/:id',(req, res)=>{
     let teacherID = req.body.teacherID;
@@ -98,6 +156,31 @@ appRouter.post('/teachers/edit/:id',(req, res)=>{
         else{
         req.flash('success', 'Teacher Record Updated');
         res.redirect('/teachers');
+        }
+    });
+});
+
+appRouter.post('/students/edit/:id',(req, res)=>{
+    let studentID= req.body.studentID;
+    let studentLastName = req.body.studentLastName;
+    let studentFirstName = req.body.studentFirstName;
+    let studentMiddleName = req.body.studentMiddleName;
+
+    var form_data={
+        studentID: studentID,
+        studentLastName: studentLastName,
+        studentFirstName: studentFirstName,
+        studentMiddleName: studentMiddleName
+    };
+
+    mysqlConnection.query('UPDATE students SET ? WHERE studentID= '+studentID, form_data, (err, result) => {
+        if(err){
+            req.flash('error',err);
+            res.redirect('/students');
+        }
+        else{
+        req.flash('success', 'Student Record Updated');
+        res.redirect('/students');
         }
     });
 });
