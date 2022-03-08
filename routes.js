@@ -81,7 +81,42 @@ appRouter.get('/students/search',(req, res) => {
         }
     });
 });
-appRouter.get('/subjects', (req, res) => res.render('subjects'));
+appRouter.get('/subjects', (req, res) => {
+    mysqlConnection.query('SELECT * FROM subjects', (err, rows) => {
+        if (err){
+            req.flash('error',err);
+            res.render('subjects',{data:''});
+        }
+        else{
+            res.render('subjects',{data:rows});
+        }
+    });
+});
+appRouter.get('/subjects/delete/(:id)',(req, res)=>{
+    let subject = {id:req.params.id};
+    mysqlConnection.query('DELETE FROM subjects WHERE subjectID = '+req.params.id,subject,(err, result) => {
+        if(err){
+            req.flash('error',err);
+            res.redirect('/subjects');
+        }
+        else{
+        req.flash('success', 'Subject ID= '+req.params.id+'Record Deleted!');
+        res.redirect('/subjects');
+        }
+    });
+});
+appRouter.get('/subjects/search',(req, res) => {
+    let searchQuery = req.query.subjectName;
+    mysqlConnection.query('SELECT * FROM subjects WHERE subjectTitle LIKE ?', ['%' + searchQuery + '%'], (err, rows) => {
+        if (err){
+            req.flash('error',err);
+            res.render('subjects',{data:''});
+        }
+        else{
+        res.render('subjects',{data:rows});
+        }
+    });
+});
 appRouter.get('*', (req, res) => res.render('404'));
 
 
@@ -130,6 +165,33 @@ appRouter.post('/students/add',(req, res)=>{
         else{
         req.flash('success', 'Student Added to Record');
         res.redirect('/students');
+        }
+    });
+});
+
+appRouter.post('/subjects/add',(req, res)=>{
+    let subjectTitle = req.body.subjectTitle;
+    let subjectNo = req.body.subjectNo;
+    let transcriptLoad = req.body.transcriptLoad;
+    let payingLoad = req.body.payingLoad;
+    let teachingLoad = req.body.teachingLoad;
+
+    var form_data={
+        subjectTitle: subjectTitle,
+        subjectNo: subjectNo,
+        transcriptLoad: transcriptLoad,
+        payingLoad: payingLoad,
+        teachingLoad: teachingLoad
+    };
+
+    mysqlConnection.query('INSERT INTO subjects SET ?', form_data, (err, result) => {
+        if(err){
+            req.flash('error',err);
+            res.redirect('/subjects');
+        }
+        else{
+            req.flash('success', 'Subject Added to Record');
+            res.redirect('/subjects');
         }
     });
 });
@@ -185,5 +247,33 @@ appRouter.post('/students/edit/:id',(req, res)=>{
     });
 });
 
+appRouter.post('/subjects/edit/:id',(req, res)=>{
+    let subjectID= req.body.subjectID;
+    let subjectTitle = req.body.subjectTitle;
+    let subjectNo = req.body.subjectNo;
+    let transcriptLoad = req.body.transcriptLoad;
+    let payingLoad = req.body.payingLoad;
+    let teachingLoad = req.body.teachingLoad;
+
+    var form_data={
+        subjectID: subjectID,
+        subjectTitle: subjectTitle,
+        subjectNo: subjectNo,
+        transcriptLoad: transcriptLoad,
+        payingLoad: payingLoad,
+        teachingLoad: teachingLoad
+    };
+
+    mysqlConnection.query('UPDATE subjects SET ? WHERE subjectID= '+subjectID, form_data, (err, result) => {
+        if(err){
+            req.flash('error',err);
+            res.redirect('/subjects');
+        }
+        else{
+        req.flash('success', 'Subject Record Updated');
+        res.redirect('/subjects');
+        }
+    });
+});
 
 module.exports=appRouter;
