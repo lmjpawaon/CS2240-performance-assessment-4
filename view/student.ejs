@@ -5,15 +5,16 @@
     <title>Student Dashboard</title>
 </head>
 <body>
+    <%- include('partials/navbar'); %>
+    <br>
+    <br>
+    <br>
     <div class="container">
         <h1 class="title">STUDENT DASHBOARD</h1>
     </div>
     <div class="container">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#studentForm" >Create Student Record</button>
-        &nbsp;
-        <a class="btn btn-primary" href="/" >Return to Homepage</a>
     </div>
-    <br>
     <% if (messages.success) { %>
         <div class="alert alert-success" role="alert"><%- messages.success %></div>
     <% } %>
@@ -22,7 +23,7 @@
     <% } %>
     <div class="form-container">
         <form action="/students/search" method="GET">
-            <input type="text" name="studentName" placeholder="Enter Last Name or First name" size="50">
+            <input type="text" name="studentName" placeholder="Enter Last Name or First name" size="50" style="height:40px;border-radius:5px;">
             <input type="submit" value="Search" class="btn btn-primary">
             <a href="/students" class="btn btn-primary">Refresh List</a>
         </form>
@@ -58,69 +59,73 @@
           </div>
         </div>
       </div>
-
-      <% if(data.length) { %>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Middle Name</th>
-                    <th width="200px">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            <% for(let students of data) { %>
-                <tr>
-                    <td><%= students.studentID%></td>
-                    <td><%= students.studentLastName%></td>
-                    <td><%= students.studentFirstName%></td>
-                    <td><%= students.studentMiddleName%></td>
-                    <td>
-                        <a class="btn btn-success edit" data-bs-toggle="modal" data-bs-target="#studentForm<%=students.studentID%>">Edit</a>
-                        <a class="btn btn-danger delete" href="/students/delete/<%=students.studentID%>">Delete</a>
-                        <!--Modal for edit-->
-                        <div class="modal fade" id="studentForm<%=students.studentID%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header border-bottom-0">
-                                <h5 class="modal-title" id="exampleModalLabel">Update Student Record</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+      <br>
+      <div class="container">
+        
+            <table class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">#</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Middle Name</th>
+                        <th width="200px">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% if(data.length) { %>
+                <% for(let students of data) { %>
+                    <tr>
+                        <td><%= students.studentID%></td>
+                        <td><%= students.studentLastName%></td>
+                        <td><%= students.studentFirstName%></td>
+                        <td><%= students.studentMiddleName%></td>
+                        <td>
+                            <a class="btn btn-success edit" data-bs-toggle="modal" data-bs-target="#studentForm<%=students.studentID%>">Edit</a>
+                            <a class="btn btn-danger delete" href="/students/delete/<%=students.studentID%>">Delete</a>
+                            <!--Modal for edit-->
+                            <div class="modal fade" id="studentForm<%=students.studentID%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header border-bottom-0">
+                                    <h5 class="modal-title" id="exampleModalLabel">Update Student Record</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <form method="post" action="/students/edit/<%=students.studentID%>">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="studentID">Student ID</label>
+                                            <input type="number" class="form-control" name="studentID" value="<%=students.studentID%>" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="studentLastName">Last Name</label>
+                                        <input type="text" class="form-control" name="studentLastName" value="<%=students.studentLastName%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="studentFirstName">First Name</label>
+                                            <input type="text" class="form-control" name="studentFirstName" value="<%=students.studentFirstName%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="studentMiddleName">Middle Name</label>
+                                            <input type="text" class="form-control" name="studentMiddleName"  value="<%=students.studentMiddleName%>">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                    </form>
                                 </div>
-                                <form method="post" action="/students/edit/<%=students.studentID%>">
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="studentID">Student ID</label>
-                                        <input type="number" class="form-control" name="studentID" value="<%=students.studentID%>" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                    <label for="studentLastName">Last Name</label>
-                                    <input type="text" class="form-control" name="studentLastName" value="<%=students.studentLastName%>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="studentFirstName">First Name</label>
-                                        <input type="text" class="form-control" name="studentFirstName" value="<%=students.studentFirstName%>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="studentMiddleName">Middle Name</label>
-                                        <input type="text" class="form-control" name="studentMiddleName"  value="<%=students.studentMiddleName%>">
-                                    </div>
                                 </div>
-                                <div class="modal-footer border-top-0 d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                                </form>
                             </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                <% } %>
+                </tbody>
+            </table>
             <% } %>
-            </tbody>
-        </table>
-        <% } %>
+        </div>
+        <%- include('partials/footer'); %>
 </body>
 </html>

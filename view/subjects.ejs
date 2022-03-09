@@ -5,15 +5,16 @@
     <title>Subject Dashboard</title>
 </head>
 <body>
+    <%- include('partials/navbar'); %>
+    <br>
+    <br>
+    <br>
     <div class="container">
         <h1 class="title">SUBJECT DASHBOARD</h1>
     </div>
     <div class="container">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subjectForm" >Create Subject Record</button>
-        &nbsp;
-        <a class="btn btn-primary" href="/" >Return to Homepage</a>
     </div>
-    <br>
     <% if (messages.success) { %>
         <div class="alert alert-success" role="alert"><%- messages.success %></div>
     <% } %>
@@ -22,7 +23,7 @@
     <% } %>
     <div class="form-container">
         <form action="/subjects/search" method="GET">
-            <input type="text" name="subjectName" placeholder="Enter Subject Name" size="50">
+            <input type="text" name="subjectName" placeholder="Enter Subject Name" size="50" style="height:40px;border-radius:5px;">
             <input type="submit" value="Search" class="btn btn-primary">
             <a href="/subjects" class="btn btn-primary">Refresh List</a>
         </form>
@@ -66,80 +67,85 @@
           </div>
         </div>
       </div>
-      <% if(data.length) { %>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Subject Title</th>
-                    <th scope="col">Subject No.</th>
-                    <th scope="col">Transcript Load</th>
-                    <th scope="col">Paying Load</th>
-                    <th scope="col">Teaching Load</th>
-                    <th width="200px">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            <% for(let subjects of data) { %>
-                <tr>
-                    <td><%= subjects.subjectID%></td>
-                    <td><%= subjects.subjectTitle%></td>
-                    <td><%= subjects.subjectNo%></td>
-                    <td><%= subjects.transcriptLoad%></td>
-                    <td><%= subjects.payingLoad%></td>
-                    <td><%= subjects.teachingLoad%></td>
-                    <td>
-                        <a class="btn btn-success edit" data-bs-toggle="modal" data-bs-target="#subjectForm<%=subjects.subjectID%>">Edit</a>
-                        <a class="btn btn-danger delete" href="/subjects/delete/<%=subjects.subjectID%>">Delete</a>
-                        <!--Modal for edit-->
-                        <div class="modal fade" id="subjectForm<%=subjects.subjectID%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header border-bottom-0">
-                                <h5 class="modal-title" id="exampleModalLabel">Update Subject Record</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+      <br>
+      <div class="container">
+       
+            <table class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">#</th>
+                        <th scope="col">Subject Title</th>
+                        <th scope="col">Subject No.</th>
+                        <th scope="col">Transcript Load</th>
+                        <th scope="col">Paying Load</th>
+                        <th scope="col">Teaching Load</th>
+                        <th width="200px">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(data.length) { %>
+                <% for(let subjects of data) { %>
+                    <tr>
+                        <td><%= subjects.subjectID%></td>
+                        <td><%= subjects.subjectTitle%></td>
+                        <td><%= subjects.subjectNo%></td>
+                        <td><%= subjects.transcriptLoad%></td>
+                        <td><%= subjects.payingLoad%></td>
+                        <td><%= subjects.teachingLoad%></td>
+                        <td>
+                            <a class="btn btn-success edit" data-bs-toggle="modal" data-bs-target="#subjectForm<%=subjects.subjectID%>">Edit</a>
+                            <a class="btn btn-danger delete" href="/subjects/delete/<%=subjects.subjectID%>">Delete</a>
+                            <!--Modal for edit-->
+                            <div class="modal fade" id="subjectForm<%=subjects.subjectID%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header border-bottom-0">
+                                    <h5 class="modal-title" id="exampleModalLabel">Update Subject Record</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <form method="post" action="/subjects/edit/<%=subjects.subjectID%>">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="subjectID">Subject ID</label>
+                                            <input type="number" class="form-control" name="subjectID" value="<%=subjects.subjectID%>" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                        <label for="subjectTitle">Subject Title</label>
+                                        <input type="text" class="form-control" name="subjectTitle" value="<%=subjects.subjectTitle%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="subjectNo">Subject Number</label>
+                                            <input type="text" class="form-control" name="subjectNo" value="<%=subjects.subjectNo%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="transcriptLoad">Transcript Load</label>
+                                            <input type="number" class="form-control" name="transcriptLoad"  value="<%=subjects.transcriptLoad%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="payingLoad">Paying Load</label>
+                                            <input type="number" class="form-control" name="payingLoad"  value="<%=subjects.payingLoad%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="teachingLoad">Teaching Load</label>
+                                            <input type="number" class="form-control" name="teachingLoad"  value="<%=subjects.teachingLoad%>">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer border-top-0 d-flex justify-content-center">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                    </form>
                                 </div>
-                                <form method="post" action="/subjects/edit/<%=subjects.subjectID%>">
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="subjectID">Subject ID</label>
-                                        <input type="number" class="form-control" name="subjectID" value="<%=subjects.subjectID%>" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                    <label for="subjectTitle">Subject Title</label>
-                                    <input type="text" class="form-control" name="subjectTitle" value="<%=subjects.subjectTitle%>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="subjectNo">Subject Number</label>
-                                        <input type="text" class="form-control" name="subjectNo" value="<%=subjects.subjectNo%>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="transcriptLoad">Transcript Load</label>
-                                        <input type="number" class="form-control" name="transcriptLoad"  value="<%=subjects.transcriptLoad%>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="payingLoad">Paying Load</label>
-                                        <input type="number" class="form-control" name="payingLoad"  value="<%=subjects.payingLoad%>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="teachingLoad">Teaching Load</label>
-                                        <input type="number" class="form-control" name="teachingLoad"  value="<%=subjects.teachingLoad%>">
-                                    </div>
                                 </div>
-                                <div class="modal-footer border-top-0 d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                                </form>
                             </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                <% } %>
+                </tbody>
+            </table>
             <% } %>
-            </tbody>
-        </table>
-        <% } %>
+        </div>
+        <%- include('partials/footer'); %>
 </body>
 </html>
